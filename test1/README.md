@@ -3,5 +3,9 @@
 实验内容：对Oracle12c中的HR人力资源管理系统中的表进行查询与分析  
 学生姓名：刘成  
 学号 ：201610414311  
-对 两个查询代码运行结果如下  
+对 两个查询示例代码运行结果如下  
 ![Image text](https://github.com/201610414311/Oracle/blob/master/raw/search1.png)  
+  
+    
+      
+![Image text](https://github.com/201610414311/Oracle/blob/master/raw/search2.png)  
