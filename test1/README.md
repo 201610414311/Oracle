@@ -4,8 +4,9 @@
 学生姓名：刘成  
 学号 ：201610414311  
 对 两个查询示例代码运行结果如下  
-![Image text](https://github.com/201610414311/Oracle/blob/master/raw/search1.png)  
+示例 1  
+![Image text](https://github.com/201610414311/Oracle/blob/master/raw/search2.png)
+   
   
-    
-      
-![Image text](https://github.com/201610414311/Oracle/blob/master/raw/search2.png)  
+  示例2  
+![Image text](https://github.com/201610414311/Oracle/blob/master/raw/search1.png) 
