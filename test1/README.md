@@ -4,4 +4,4 @@
 学生姓名：刘成  
 学号 ：201610414311  
 对 两个查询代码运行结果如下  
-https://github.com/201610414311/Oracle/blob/master/raw/search1.png  
+![Image text](https://github.com/201610414311/Oracle/blob/master/raw/search1.png)  
