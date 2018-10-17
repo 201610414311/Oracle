@@ -3,7 +3,7 @@
 实验内容：对Oracle12c中的HR人力资源管理系统中的表进行查询与分析  
 学生姓名：刘成  
 学号 ：201610414311  
-对 两个查询示例代码运行结果如下  
+对 两个查询示例代码运行结果如下：  
 示例 2  
 ![Image text](https://github.com/201610414311/Oracle/blob/master/raw/search2.png)
    
@@ -20,4 +20,6 @@
   二：示例2的成本要比示例1高出一倍多，查询数据较少，勉强还能使用示例2的代码，但如果查询数据量非常大，示例2的代码就有点不理性了。  
   
  示例1优化指导如下图：  
+ ![Image text](https://github.com/201610414311/Oracle/blob/master/raw/Optimization%20guidance%20.png)  
+ 如图，图中并未给出优化指导信息。
  
