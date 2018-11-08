@@ -66,4 +66,5 @@ orders_details表
   STORAGE(  
   BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)   
   TABLESPACE "USERS02" ) ;  
+  ![Image text](https://github.com/201610414311/Oracle/blob/master/test3/order_details.png)  
   
