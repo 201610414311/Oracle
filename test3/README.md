@@ -36,6 +36,8 @@ orders表
   BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)  
   TABLESPACE "USERS02" ) ;    
  
+ 
+ ![Image text]()
 orders_details表  
 
   CREATE TABLE "LIUC"."ORDER_DETAILS"   
