@@ -37,7 +37,7 @@ orders表
   TABLESPACE "USERS02" ) ;    
  
  
- ![Image text]()
+ ![Image text](https://github.com/201610414311/Oracle/blob/master/test3/orders.png)  
 orders_details表  
 
   CREATE TABLE "LIUC"."ORDER_DETAILS"   
