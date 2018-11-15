@@ -604,3 +604,216 @@ ADD CONSTRAINT ORDER_DETAILS_PRODUCT_NUM CHECK
 (Product_Num>0)
 ENABLE;
 ```
+  
+    
+      
+      
+ 创建三个触发器：  
+ ```sql
+ CREATE OR REPLACE EDITIONABLE TRIGGER "ORDERS_TRIG_ROW_LEVEL"
+BEFORE INSERT OR UPDATE OF DISCOUNT ON "ORDERS"
+FOR EACH ROW --行级触发器
+declare
+  m number(8,2);
+BEGIN
+  if inserting then
+       :new.TRADE_RECEIVABLE := - :new.discount;
+  else
+      select sum(PRODUCT_NUM*PRODUCT_PRICE) into m from ORDER_DETAILS where ORDER_ID=:old.ORDER_ID;
+      if m is null then
+        m:=0;
+      end if;
+      :new.TRADE_RECEIVABLE := m - :new.discount;
+  end if;
+END;
+```
+![Image text](https://github.com/201610414311/Oracle/blob/master/test4/test4.13.png)  
+批量插入订单数据之前，禁用触发器  
+```sql
+ALTER TRIGGER "ORDERS_TRIG_ROW_LEVEL" DISABLE;
+```
+```sql
+CREATE OR REPLACE EDITIONABLE TRIGGER "ORDER_DETAILS_ROW_TRIG"
+AFTER DELETE OR INSERT OR UPDATE  ON ORDER_DETAILS
+FOR EACH ROW
+BEGIN
+  --DBMS_OUTPUT.PUT_LINE(:NEW.ORDER_ID);
+  IF :NEW.ORDER_ID IS NOT NULL THEN
+    MERGE INTO ORDER_ID_TEMP A
+    USING (SELECT 1 FROM DUAL) B
+    ON (A.ORDER_ID=:NEW.ORDER_ID)
+    WHEN NOT MATCHED THEN
+      INSERT (ORDER_ID) VALUES(:NEW.ORDER_ID);
+  END IF;
+  IF :OLD.ORDER_ID IS NOT NULL THEN
+    MERGE INTO ORDER_ID_TEMP A
+    USING (SELECT 1 FROM DUAL) B
+    ON (A.ORDER_ID=:OLD.ORDER_ID)
+    WHEN NOT MATCHED THEN
+      INSERT (ORDER_ID) VALUES(:OLD.ORDER_ID);
+  END IF;
+END;
+```
+```sql
+ALTER TRIGGER "ORDER_DETAILS_ROW_TRIG" DISABLE;
+```
+```sql
+CREATE OR REPLACE EDITIONABLE TRIGGER "ORDER_DETAILS_SNTNS_TRIG"
+AFTER DELETE OR INSERT OR UPDATE ON ORDER_DETAILS
+declare
+  m number(8,2);
+BEGIN
+  FOR R IN (SELECT ORDER_ID FROM ORDER_ID_TEMP)
+  LOOP
+    select sum(PRODUCT_NUM*PRODUCT_PRICE) into m from ORDER_DETAILS
+      where ORDER_ID=R.ORDER_ID;
+    if m is null then
+      m:=0;
+    end if;
+    UPDATE ORDERS SET TRADE_RECEIVABLE = m - discount
+      WHERE ORDER_ID=R.ORDER_ID;
+  END LOOP; 
+  END;
+  ```
+  ```sql
+  ALTER TRIGGER "ORDER_DETAILS_SNTNS_TRIG" DISABLE;
+  ```
+    
+      
+       
+    
+      
+ 创建序列
+ ```sql
+ CREATE SEQUENCE  "SEQ_ORDER_ID"  MINVALUE 1 MAXVALUE 9999999999 INCREMENT BY 1 START WITH 1 CACHE 2000 ORDER  NOCYCLE  NOPARTITION ;
+ ```
+ ```sql
+ CREATE SEQUENCE  "SEQ_ORDER_DETAILS_ID"  MINVALUE 1 MAXVALUE 9999999999 INCREMENT BY 1 START WITH 1 CACHE 2000 ORDER  NOCYCLE  NOPARTITION ;
+ ```
+ 创建视图  
+ ```sql
+ CREATE OR REPLACE FORCE EDITIONABLE VIEW "VIEW_ORDER_DETAILS" ("ID", "ORDER_ID", "CUSTOMER_NAME", "CUSTOMER_TEL", "ORDER_DATE", "PRODUCT_TYPE", "PRODUCT_NAME", "PRODUCT_NUM", "PRODUCT_PRICE") AS
+  SELECT
+  d.ID,
+  o.ORDER_ID,
+  o.CUSTOMER_NAME,o.CUSTOMER_TEL,o.ORDER_DATE,
+  p.PRODUCT_TYPE,
+  d.PRODUCT_NAME,
+  d.PRODUCT_NUM,
+  d.PRODUCT_PRICE
+FROM ORDERS o,ORDER_DETAILS d,PRODUCTS p where d.ORDER_ID=o.ORDER_ID and d.PRODUCT_NAME=p.PRODUCT_NAME;
+```
+插入数据  
+```sql
+INSERT INTO DEPARTMENTS(DEPARTMENT_ID,DEPARTMENT_NAME) values (1,'总经办');
+INSERT INTO EMPLOYEES(EMPLOYEE_ID,NAME,EMAIL,PHONE_NUMBER,HIRE_DATE,SALARY,MANAGER_ID,DEPARTMENT_ID)
+  VALUES (1,'李董事长',NULL,NULL,to_date('2010-1-1','yyyy-mm-dd'),50000,NULL,1);
+
+INSERT INTO DEPARTMENTS(DEPARTMENT_ID,DEPARTMENT_NAME) values (11,'销售部1');
+INSERT INTO EMPLOYEES(EMPLOYEE_ID,NAME,EMAIL,PHONE_NUMBER,HIRE_DATE,SALARY,MANAGER_ID,DEPARTMENT_ID)
+  VALUES (11,'张总',NULL,NULL,to_date('2010-1-1','yyyy-mm-dd'),50000,1,1);
+INSERT INTO EMPLOYEES(EMPLOYEE_ID,NAME,EMAIL,PHONE_NUMBER,HIRE_DATE,SALARY,MANAGER_ID,DEPARTMENT_ID)
+  VALUES (111,'吴经理',NULL,NULL,to_date('2010-1-1','yyyy-mm-dd'),50000,11,11);
+INSERT INTO EMPLOYEES(EMPLOYEE_ID,NAME,EMAIL,PHONE_NUMBER,HIRE_DATE,SALARY,MANAGER_ID,DEPARTMENT_ID)
+  VALUES (112,'白经理',NULL,NULL,to_date('2010-1-1','yyyy-mm-dd'),50000,11,11);
+
+INSERT INTO DEPARTMENTS(DEPARTMENT_ID,DEPARTMENT_NAME) values (12,'销售部2');
+INSERT INTO EMPLOYEES(EMPLOYEE_ID,NAME,EMAIL,PHONE_NUMBER,HIRE_DATE,SALARY,MANAGER_ID,DEPARTMENT_ID)
+  VALUES (12,'王总',NULL,NULL,to_date('2010-1-1','yyyy-mm-dd'),50000,1,1);
+INSERT INTO EMPLOYEES(EMPLOYEE_ID,NAME,EMAIL,PHONE_NUMBER,HIRE_DATE,SALARY,MANAGER_ID,DEPARTMENT_ID)
+  VALUES (121,'赵经理',NULL,NULL,to_date('2010-1-1','yyyy-mm-dd'),50000,12,12);
+INSERT INTO EMPLOYEES(EMPLOYEE_ID,NAME,EMAIL,PHONE_NUMBER,HIRE_DATE,SALARY,MANAGER_ID,DEPARTMENT_ID)
+  VALUES (122,'刘经理',NULL,NULL,to_date('2010-1-1','yyyy-mm-dd'),50000,12,12);
+
+
+insert into products (product_name,product_type) values ('computer1','电脑');
+insert into products (product_name,product_type) values ('computer2','电脑');
+insert into products (product_name,product_type) values ('computer3','电脑');
+
+insert into products (product_name,product_type) values ('phone1','手机');
+insert into products (product_name,product_type) values ('phone2','手机');
+insert into products (product_name,product_type) values ('phone3','手机');
+
+insert into products (product_name,product_type) values ('paper1','耗材');
+insert into products (product_name,product_type) values ('paper2','耗材');
+insert into products (product_name,product_type) values ('paper3','耗材');
+```
+![Image text](https://github.com/201610414311/Oracle/blob/master/test4/test4.14.png)   
+插入订单数据  
+```sql
+declare
+  dt date;
+  m number(8,2);
+  V_EMPLOYEE_ID NUMBER(6);
+  v_order_id number(10);
+  v_name varchar2(100);
+  v_tel varchar2(100);
+  v number(10,2);
+
+begin
+  for i in 1..10000
+  loop
+    if i mod 2 =0 then
+      dt:=to_date('2015-3-2','yyyy-mm-dd')+(i mod 60);
+    else
+      dt:=to_date('2016-3-2','yyyy-mm-dd')+(i mod 60);
+    end if;
+    V_EMPLOYEE_ID:=CASE I MOD 6 WHEN 0 THEN 11 WHEN 1 THEN 111 WHEN 2 THEN 112
+                                WHEN 3 THEN 12 WHEN 4 THEN 121 ELSE 122 END;
+    --插入订单
+    v_order_id:=SEQ_ORDER_ID.nextval; --应该将SEQ_ORDER_ID.nextval保存到变量中。
+    v_name := 'aa'|| 'aa';
+    v_name := 'zhang' || i;
+    v_tel := '139888883' || i;
+    insert /*+append*/ into ORDERS (ORDER_ID,CUSTOMER_NAME,CUSTOMER_TEL,ORDER_DATE,EMPLOYEE_ID,DISCOUNT)
+      values (v_order_id,v_name,v_tel,dt,V_EMPLOYEE_ID,dbms_random.value(100,0));
+    --插入订单y一个订单包括3个产品
+    v:=dbms_random.value(10000,4000);
+    v_name:='computer'|| (i mod 3 + 1);
+    insert /*+append*/ into ORDER_DETAILS(ID,ORDER_ID,PRODUCT_NAME,PRODUCT_NUM,PRODUCT_PRICE)
+      values (SEQ_ORDER_DETAILS_ID.NEXTVAL,v_order_id,v_name,2,v);
+    v:=dbms_random.value(1000,50);
+    v_name:='paper'|| (i mod 3 + 1);
+    insert /*+append*/ into ORDER_DETAILS(ID,ORDER_ID,PRODUCT_NAME,PRODUCT_NUM,PRODUCT_PRICE)
+      values (SEQ_ORDER_DETAILS_ID.NEXTVAL,v_order_id,v_name,3,v);
+    v:=dbms_random.value(9000,2000);
+    v_name:='phone'|| (i mod 3 + 1);
+    insert /*+append*/ into ORDER_DETAILS(ID,ORDER_ID,PRODUCT_NAME,PRODUCT_NUM,PRODUCT_PRICE)
+      values (SEQ_ORDER_DETAILS_ID.NEXTVAL,v_order_id,v_name,1,v);
+    --在触发器关闭的情况下，需要手工计算每个订单的应收金额：
+    select sum(PRODUCT_NUM*PRODUCT_PRICE) into m from ORDER_DETAILS where ORDER_ID=v_order_id;
+    if m is null then
+     m:=0;
+    end if;
+    UPDATE ORDERS SET TRADE_RECEIVABLE = m - discount WHERE ORDER_ID=v_order_id;
+    IF I MOD 1000 =0 THEN
+      commit; --每次提交会加快插入数据的速度
+    END IF;
+  end loop;
+  --统计用户的所有表，所需时间很长：2千万行数据，需要1600秒，该语句可选
+  --dbms_stats.gather_schema_stats(User,estimate_percent=>100,cascade=> TRUE); --estimate_percent采样行的百分比
+end;
+```
+恢复触发器  
+```sql
+ALTER TRIGGER "ORDERS_TRIG_ROW_LEVEL" ENABLE;
+ALTER TRIGGER "ORDER_DETAILS_SNTNS_TRIG" ENABLE;
+ALTER TRIGGER "ORDER_DETAILS_ROW_TRIG" ENABLE;
+```
+增加动态分区  
+```sql
+ALTER TABLE ORDERS
+ADD PARTITION PARTITION_BEFORE_2018 VALUES LESS THAN (TO_DATE(' 2018-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'));
+```
+```sql
+ALTER INDEX ORDERS_INDEX_DATE
+MODIFY PARTITION PARTITION_BEFORE_2018
+NOCOMPRESS;
+```
+查询测试  
+```sql
+select * from ORDERS where  order_id=1;
+select * from ORDER_DETAILS where  order_id=1;
+select * from VIEW_ORDER_DETAILS where order_id=1;
+```
+![Image text](https://github.com/201610414311/Oracle/blob/master/test4/test4.15.png)  
