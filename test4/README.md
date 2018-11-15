@@ -297,4 +297,11 @@ STORAGE
   BUFFER_POOL DEFAULT
 );
 ```
-![Image text]()
+![Image text](https://github.com/201610414311/Oracle/blob/master/test4/test4.5.png)  
+```sql
+ALTER TABLE PRODUCTS
+ADD CONSTRAINT PRODUCTS_CHK1 CHECK
+(PRODUCT_TYPE IN ('耗材', '手机', '电脑'))
+ENABLE;
+```
+![Image text](https://github.com/201610414311/Oracle/blob/master/test4/test4.4.png) 
