@@ -429,7 +429,8 @@ STORAGE
 )
 NOPARALLEL;
 ```
-![Image text](https://github.com/201610414311/Oracle/blob/master/test4/test4.8.png)  
+![Image text](https://github.com/201610414311/Oracle/blob/master/test4/test4.10.png) 
+
 ```sql
 CREATE UNIQUE INDEX ORDERS_PK ON ORDERS (ORDER_ID ASC)
 GLOBAL PARTITION BY HASH (ORDER_ID)
@@ -453,7 +454,8 @@ STORAGE
 )
 NOPARALLEL;
 ```
-![Image text](https://github.com/201610414311/Oracle/blob/master/test4/test4.9.png)  
+![Image text](https://github.com/201610414311/Oracle/blob/master/test4/test4.8.png)  
+
 ```sql
 ALTER TABLE ORDERS
 ADD CONSTRAINT ORDERS_PK PRIMARY KEY
@@ -474,3 +476,4 @@ REFERENCES EMPLOYEES
 )
 ENABLE;
 ```
+![Image text](https://github.com/201610414311/Oracle/blob/master/test4/test4.9.png)  
