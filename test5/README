@@ -12,10 +12,9 @@ create or replace PACKAGE MyPack IS
   */
   FUNCTION Get_SaleAmount(V_DEPARTMENT_ID NUMBER) RETURN NUMBER;
   PROCEDURE Get_Employees(V_EMPLOYEE_ID NUMBER);
-END MyPack;
-![Image text](https://github.com/201610414311/Oracle/blob/master/test5/test5.1.png)  
+END MyPack; 
 
-  
+![image](https://github.com/201610414311/Oracle/blob/master/test5/test5.1.png)  
     
       
         
