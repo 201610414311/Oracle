@@ -2,7 +2,7 @@
 学号：201610414311
 试验日期：2018/11/28
 创建一个包(Package)，包名是MyPack  
-```sql
+``` sql
 create or replace PACKAGE MyPack IS
   /*
   本实验以实验4为基础。
@@ -20,7 +20,7 @@ END MyPack;
       
         
 在MyPack中创建包、函数SaleAmount和一个存储过程  
-```sql
+``` sql
  create or replace PACKAGE BODY MyPack IS
   FUNCTION Get_SaleAmount(V_DEPARTMENT_ID NUMBER) RETURN NUMBER
   AS
@@ -56,13 +56,13 @@ END MyPack;
         
  测试  
  ①函数 Get_SaleAmount()测试：  
- ```sql
+ ``` sql
  select count(*) from orders;
 select MyPack.Get_SaleAmount(11) AS 部门11应收金额,MyPack.Get_SaleAmount(12) AS 部门12应收金额 from dual;
 ```
 ![Image text](https://github.com/201610414311/Oracle/blob/master/test5/test5.3.png)  
 ②过程Get_Employees()测试代码：  
-```sql
+``` sql
 set serveroutput on
 DECLARE
   V_EMPLOYEE_ID NUMBER;    
