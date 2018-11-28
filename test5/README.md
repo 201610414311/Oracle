@@ -2,7 +2,7 @@
 学号：201610414311
 试验日期：2018/11/28
 创建一个包(Package)，包名是MyPack  
-
+``` sql
 create or replace PACKAGE MyPack IS
   /*
   本实验以实验4为基础。
@@ -13,13 +13,13 @@ create or replace PACKAGE MyPack IS
   FUNCTION Get_SaleAmount(V_DEPARTMENT_ID NUMBER) RETURN NUMBER;
   PROCEDURE Get_Employees(V_EMPLOYEE_ID NUMBER);
 END MyPack; 
-
+```
 ![Image text](https://github.com/201610414311/Oracle/blob/master/test5/test5.1.png) 
     
       
         
 在MyPack中创建包、函数SaleAmount和一个存储过程  
-
+``` sql
  create or replace PACKAGE BODY MyPack IS
   FUNCTION Get_SaleAmount(V_DEPARTMENT_ID NUMBER) RETURN NUMBER
   AS
@@ -47,7 +47,7 @@ END MyPack;
       END LOOP;
     END;
 END MyPack;
-
+```
   ![Image text](https://github.com/201610414311/Oracle/blob/master/test5/test5.2.png)  
   
     
@@ -55,16 +55,16 @@ END MyPack;
         
  测试  
  函数 Get_SaleAmount()测试：  
-
+```sql
  select count(*) from orders;
 select MyPack.Get_SaleAmount(11) AS 部门11应收金额,MyPack.Get_SaleAmount(12) AS 部门12应收金额 from dual;
-
+```
 
   ![Image text](https://github.com/201610414311/Oracle/blob/master/test5/test5.3.png)  
     
       
 过程Get_Employees()测试代码：  
-
+```sql
 set serveroutput on
 DECLARE
   V_EMPLOYEE_ID NUMBER;    
@@ -74,5 +74,5 @@ BEGIN
   V_EMPLOYEE_ID := 11;
   MYPACK.Get_Employees (  V_EMPLOYEE_ID => V_EMPLOYEE_ID) ;    
 END;
-
+```
 ![Image text](https://github.com/201610414311/Oracle/blob/master/test5/test5.4.png)  
