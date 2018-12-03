@@ -66,8 +66,9 @@ orders_details表
   STORAGE(  
   BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)   
   TABLESPACE "USERS02" ) ;  
-  ![Image text](https://github.com/201610414311/Oracle/blob/master/test3/order_details.png)  
   ```
+  ![Image text](https://github.com/201610414311/Oracle/blob/master/test3/order_details.png)  
+
   查看数据库的使用情况  
   ```sql
   SQL>SELECT tablespace_name,FILE_NAME,BYTES/1024/1024 MB,MAXBYTES/1024/1024 MAX_MB,autoextensible FROM dba_data_files  WHERE  tablespace_name='USERS';
