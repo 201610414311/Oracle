@@ -5,7 +5,7 @@
 试验目的：掌握分区表的创建方法，掌握各种分区方式的使用场景。  
 按照试验步骤，我先在自己的用户上创建了orders表和orders_details表  
 orders表  
-
+```sql
   CREATE TABLE "LIUC"."ORDERS"   
    (	"ORDER_ID" NUMBER(10,0) NOT NULL ENABLE,   
 	"CUSTOMER_NAME" VARCHAR2(40 BYTE) NOT NULL ENABLE,   
@@ -35,11 +35,11 @@ orders表
   STORAGE(  
   BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)  
   TABLESPACE "USERS02" ) ;    
- 
+ ```
  
  ![Image text](https://github.com/201610414311/Oracle/blob/master/test3/orders.png)  
 orders_details表  
-
+```sql
   CREATE TABLE "LIUC"."ORDER_DETAILS"   
    (	"ID" NUMBER(10,0) NOT NULL ENABLE,   
 	"ORDER_ID" NUMBER(10,0) NOT NULL ENABLE,   
@@ -67,4 +67,17 @@ orders_details表
   BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)   
   TABLESPACE "USERS02" ) ;  
   ![Image text](https://github.com/201610414311/Oracle/blob/master/test3/order_details.png)  
-  
+  ```
+  查看数据库的使用情况  
+  ```sql
+  SQL>SELECT tablespace_name,FILE_NAME,BYTES/1024/1024 MB,MAXBYTES/1024/1024 MAX_MB,autoextensible FROM dba_data_files  WHERE  tablespace_name='USERS';
+
+SQL>SELECT a.tablespace_name "表空间名",Total/1024/1024 "大小MB",
+ free/1024/1024 "剩余MB",( total - free )/1024/1024 "使用MB",
+ Round(( total - free )/ total,4)* 100 "使用率%"
+ from (SELECT tablespace_name,Sum(bytes)free
+        FROM   dba_free_space group  BY tablespace_name)a,
+       (SELECT tablespace_name,Sum(bytes)total FROM dba_data_files
+        group  BY tablespace_name)b
+ where  a.tablespace_name = b.tablespace_name;
+ ```
